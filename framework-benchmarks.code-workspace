@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "name": "legacy-selenium",
+      "path": "./legacy-selenium"
+    },
+    {
+      "name": "modern-playwright",
+      "path": "./modern-playwright"
+    },
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.test.config": "maven",
+    "java.compile.nullAnalysis.mode": "automatic"
+  }
+}

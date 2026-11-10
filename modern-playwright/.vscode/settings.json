@@ -1,0 +1,5 @@
+{
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.test.config": "maven",
+  "maven.external.mavenExecutable": "/usr/local/Cellar/maven/3.9.8/bin/mvn"
+}
