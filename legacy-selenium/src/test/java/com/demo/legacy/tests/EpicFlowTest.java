@@ -25,6 +25,8 @@ public class EpicFlowTest {
   @Before
   public void setUp() {
     ChromeOptions options = new ChromeOptions();
+    // Run in guest mode to avoid password manager and saved credentials
+    options.addArguments("--guest");
     // Disable Chrome Password Manager so the "Change your password" breach popup never appears
     options.setExperimentalOption("prefs", new java.util.HashMap<String, Object>() {{
       put("credentials.enable_service", false);
@@ -35,10 +37,19 @@ public class EpicFlowTest {
       put("profile.password_manager_shown", false);
       put("password_manager_leak_detection_enabled", false);
       put("profile.default_content_setting_values.autofill", 2);
+      put("profiles.password_bubble_shown", false);
+      put("password_manager.leak_detection_enabled", false);
+      put("net.http.privacy_mode", true);
     }});
     options.addArguments("--disable-password-manager");
     options.addArguments("--password-store=basic");
-    options.addArguments("--disable-features=PasswordManager,PasswordLeakDetection");
+    options.addArguments("--disable-features=PasswordManager,PasswordLeakDetection,PasswordManagerBubble");
+    options.addArguments("--disable-blink-features=AutomationControlled");
+    options.addArguments("--no-service-autorun");
+    options.addArguments("start-maximized");
+    options.addArguments("--disable-sync");
+    options.addArguments("--no-first-run");
+    options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
     driver = new ChromeDriver(options);
     driver.manage().window().maximize();
     loginPage = new LoginPage(driver);

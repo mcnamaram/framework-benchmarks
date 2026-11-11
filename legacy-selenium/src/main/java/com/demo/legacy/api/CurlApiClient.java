@@ -2,6 +2,8 @@ package com.demo.legacy.api;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +37,9 @@ import java.util.List;
  *   <li>Pure JVM, deterministic, well-tested HTTP client.</li>
  * </ul>
  *
- * <p>This class is <b>intentionally left unchanged</b> to represent the legacy "current state"
- * for the demo. The annotations exist solely to foreground the quality shortcuts for the
+ * <p>This class <b>retains the legacy approach</b> to represent the legacy "current state"
+ * for the demo, with request bodies sent through stdin for cross-platform portability.
+ * The annotations exist solely to foreground the quality shortcuts for the
  * presentation narrative: "here's the old way cutting corners, here's doing it right."
  */
 public class CurlApiClient {
@@ -59,6 +62,9 @@ public class CurlApiClient {
     cmd.add("-d"); cmd.add(body); cmd.add(url);
     ProcessBuilder pb = new ProcessBuilder(cmd);
     Process process = pb.start();
+    try (OutputStream stdin = process.getOutputStream()) {
+      stdin.write(body.getBytes(StandardCharsets.UTF_8));
+    }
     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
     StringBuilder sb = new StringBuilder();
     String line;
@@ -70,9 +76,12 @@ public class CurlApiClient {
   public JSONObject put(String url, String body) throws Exception {
     List<String> cmd = new ArrayList<>();
     cmd.add("curl"); cmd.add("-s"); cmd.add("-X"); cmd.add("PUT"); cmd.add("-H"); cmd.add("Content-Type: application/json");
-    cmd.add("-d"); cmd.add(body); cmd.add(url);
+    cmd.add("--data-binary"); cmd.add("@-"); cmd.add(url);
     ProcessBuilder pb = new ProcessBuilder(cmd);
     Process process = pb.start();
+    try (OutputStream stdin = process.getOutputStream()) {
+      stdin.write(body.getBytes(StandardCharsets.UTF_8));
+    }
     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
     StringBuilder sb = new StringBuilder();
     String line;
@@ -97,9 +106,12 @@ public class CurlApiClient {
   public JSONObject patch(String url, String body) throws Exception {
     List<String> cmd = new ArrayList<>();
     cmd.add("curl"); cmd.add("-s"); cmd.add("-X"); cmd.add("PATCH"); cmd.add("-H"); cmd.add("Content-Type: application/json");
-    cmd.add("-d"); cmd.add(body); cmd.add(url);
+    cmd.add("--data-binary"); cmd.add("@-"); cmd.add(url);
     ProcessBuilder pb = new ProcessBuilder(cmd);
     Process process = pb.start();
+    try (OutputStream stdin = process.getOutputStream()) {
+      stdin.write(body.getBytes(StandardCharsets.UTF_8));
+    }
     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
     StringBuilder sb = new StringBuilder();
     String line;
